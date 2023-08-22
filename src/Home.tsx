@@ -3,6 +3,7 @@ import styled from "styled-components";
 import GradientBar from "./components/GradientBar";
 import { useAccount, useSigner } from "wagmi";
 import { useModal } from "connectkit";
+
 import {
   baseURL,
   CUSTOM_SCHEMAS,
@@ -98,9 +99,9 @@ const WhiteBox = styled.div`
 const eas = new EAS(EASContractAddress);
 
 function Home() {
-  const { status } = useAccount();
+  const { status, address } = useAccount();
   const modal = useModal();
-  const [address, setAddress] = useState("");
+  const [userAddress, setAddress] = useState("");
   const { data: signer } = useSigner();
   const [attesting, setAttesting] = useState(false);
   const [ensResolvedAddress, setEnsResolvedAddress] = useState("Dakh.eth");
@@ -108,67 +109,93 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const addressParam = searchParams.get("address");
+    const addressParam = searchParams.get("userAddress");
     if (addressParam) {
       setAddress(addressParam);
     }
   }, []);
 
-  useEffect(() => {
-    async function checkENS() {
-      if (address.includes(".eth")) {
-        const tmpAddress = await getAddressForENS(address);
-        if (tmpAddress) {
-          setEnsResolvedAddress(tmpAddress);
-        } else {
-          setEnsResolvedAddress("");
-        }
-      } else {
-        setEnsResolvedAddress("");
-      }
-    }
+  // useEffect(() => {
+  //   async function checkENS() {
+  //     if (address.includes(".eth")) {
+  //       const tmpAddress = await getAddressForENS(address);
+  //       if (tmpAddress) {
+  //         setEnsResolvedAddress(tmpAddress);
+  //       } else {
+  //         setEnsResolvedAddress("");
+  //       }
+  //     } else {
+  //       setEnsResolvedAddress("");
+  //     }
+  //   }
 
-    checkENS();
-  }, [address]);
+  //   checkENS();
+  // }, [address]);
 
   return (
     <Container>
       <GradientBar />
       <WhiteBox>
-        <Title>
-          I <b>attest</b> that I met
-        </Title>
-
-        <InputContainer>
+        <Title>Please OFACk me.</Title>
+        <br />
+        <br />
+        {/* <InputContainer>
           <InputBlock
             autoCorrect={"off"}
             autoComplete={"off"}
             autoCapitalize={"off"}
-            placeholder={"Address/ENS"}
+            placeholder={"Wallet Address to OFACk.."}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
           {ensResolvedAddress && <EnsLogo src={"/ens-logo.png"} />}
-        </InputContainer>
+        </InputContainer> */}
         <MetButton
           onClick={async () => {
+            async function checkOFAC(addr: String) {
+              console.log("ofacking address: ", addr);
+              return Promise.resolve(true);
+            }
+
+            console.log("reading one.");
             if (status !== "connected") {
               modal.setOpen(true);
             } else {
+              console.log("attest a go..");
               setAttesting(true);
               try {
-                const schemaEncoder = new SchemaEncoder("bool metIRL");
+                console.log("scheme a go..");
+
+                const schemaEncoder = new SchemaEncoder("bool ofackd");
+                console.log("encode a go..");
+
                 const encoded = schemaEncoder.encodeData([
-                  { name: "metIRL", type: "bool", value: true },
+                  { name: "ofackd", type: "bool", value: true },
                 ]);
+                console.log("invariant a go..");
 
                 invariant(signer, "signer must be defined");
+                console.log("connection a go..");
+
                 eas.connect(signer);
+                console.log("recipient a go..");
+                console.log(address);
 
-                const recipient = ensResolvedAddress
-                  ? ensResolvedAddress
-                  : address;
+                const recipient = address;
+                console.log("recipient: ", recipient);
 
+                console.log("actual attest a go..");
+
+                console.log({
+                  data: {
+                    recipient: recipient,
+                    data: encoded,
+                    refUID: ethers.constants.HashZero,
+                    revocable: true,
+                    expirationTime: 0,
+                  },
+                  schema: CUSTOM_SCHEMAS.MET_IRL_SCHEMA,
+                });
                 const tx = await eas.attest({
                   data: {
                     recipient: recipient,
@@ -179,11 +206,17 @@ function Home() {
                   },
                   schema: CUSTOM_SCHEMAS.MET_IRL_SCHEMA,
                 });
+                console.log("tx-------------------------------");
+                console.log(tx);
+                console.log("wait....");
 
                 const uid = await tx.wait();
 
-                const attestation = await getAttestation(uid);
+                console.log("GET attestation-------------------------------");
 
+                const attestation = await getAttestation(uid);
+                console.log("attestation-------------------------------");
+                console.log(attestation);
                 // Update ENS names
                 await Promise.all([
                   axios.get(`${baseURL}/api/getENS/${address}`),
@@ -191,16 +224,22 @@ function Home() {
                 ]);
 
                 navigate(`/connections`);
-              } catch (e) {}
+              } catch (e) {
+                console.log("-------------------------------");
+
+                console.log(e);
+
+                console.log("-------------------------------");
+              }
 
               setAttesting(false);
             }
           }}
         >
           {attesting
-            ? "Attesting..."
+            ? "Checking... Please wait."
             : status === "connected"
-            ? "Make attestation"
+            ? "OFACk My wallet"
             : "Connect wallet"}
         </MetButton>
 

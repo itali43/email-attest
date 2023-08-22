@@ -1,3 +1,17 @@
+# OFACk'd
+
+An Application to attest to your OFAC compliance.
+
+### Schema
+
+`{ofacd:bool}`
+
+### example
+
+https://sepolia.easscan.org/offchain/url/#attestation=eNqlkUuuFUEIhvfS447hUbyGnu6%2BmzAOKKpqAUYTl2%2FdozuQBEY%2FHz%2Fw7YAvpMeJiCK7nAf8vkgt1utmG9LY%2FZot%2BAPvlwkT3MQ60VHm8SlmY8TRjV2lWq2d3GTldBGv7Lk6VwTAUG5eoyFrzGFZvSb%2Fg2i2PpMICdS6owdaqDVnWKaZVDKcFSpGtrKQ7iu0h22fA5yPk%2ByTQyDhrnCnmXwo5zR58LqpHrib0suvZ7bL3kMLcVubFBnZg0IW52jQc3RJSVPWXIuKCnVVUcBKm4reC0fRX4hPBkJVXMsaTeMOOKhRr2rDsxtJ6w7bo5Zr26ch4YDuAsCk%2FQ2BwNh39s6L%2FXIaz1gjZUvjq9MFj93T9yb7TRqk7mh8wu48zp8%2Ffs034v8Cj83D738A2PGB%2BA%3D%3D
+
+^^Off chain attestation^^
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
